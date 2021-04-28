@@ -1,2 +1,3 @@
 Password Generator
+------------------
 Python Tkinter()
