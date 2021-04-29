@@ -23,7 +23,6 @@ def generate(): # Password Generate
     except:
         messagebox.showinfo("Warning!","Enter the numeric value.")
 
-<<<<<<< HEAD
 def clear():  # Entry Clear
    text2 = entry2.get()
    if text2 == "":
@@ -80,7 +79,6 @@ def print_selection():  # Checkbox Combination
     elif var5.get() == 1:
         all = numbers + lower + upper + symbols
 
-=======
 def clear():
     text  = entry1.get()
     text2 = entry2.get()
@@ -88,7 +86,7 @@ def clear():
         messagebox.showinfo("Warning!","Sections are already empty.")
     entry1.delete(0,END)
     entry2.delete(0,END)
->>>>>>> 402bb6d3ff0ff4628db46c13f58973c73bb4e20f
+
 
 def callback(url):
     webbrowser.open_new(url)
@@ -134,11 +132,11 @@ var3 = IntVar()
 var4 = IntVar()
 var5 = IntVar()
 
-check1 = Checkbutton(root, text='Number',variable=var1, onvalue=1, offvalue=0, command=print_selection,fg="#090b03",bg="#314169").pack()
-check2 = Checkbutton(root, text='Lower',variable=var2, onvalue=1, offvalue=0, command=print_selection,fg="#090b03",bg="#314169").pack()
-check3 = Checkbutton(root, text='Upper',variable=var3, onvalue=1, offvalue=0, command=print_selection,fg="#090b03",bg="#314169").pack()
-check4 = Checkbutton(root, text='Symbols',variable=var4, onvalue=1, offvalue=0, command=print_selection,fg="#090b03",bg="#314169").pack()
-check5 = Checkbutton(root, text='All',variable=var5, onvalue=1, offvalue=0, command=print_selection,fg="#090b03",bg="#314169").pack()
+check1 = Checkbutton(root, text='Number',variable=var1, onvalue=1, offvalue=0, command=print_selection,fg="#d78c00",bg="#314169").pack()
+check2 = Checkbutton(root, text='Lower',variable=var2, onvalue=1, offvalue=0, command=print_selection,fg="#d78c00",bg="#314169").pack()
+check3 = Checkbutton(root, text='Upper',variable=var3, onvalue=1, offvalue=0, command=print_selection,fg="#d78c00",bg="#314169").pack()
+check4 = Checkbutton(root, text='Symbols',variable=var4, onvalue=1, offvalue=0, command=print_selection,fg="#d78c00",bg="#314169").pack()
+check5 = Checkbutton(root, text='All',variable=var5, onvalue=1, offvalue=0, command=print_selection,fg="#d78c00",bg="#314169").pack()
 
 space5 = Label(root,fg="yellow",bg="#314169").pack()
 link1 = Label(root,text="Follow Me Github",fg="yellow",bg="#314169",cursor="hand2")
