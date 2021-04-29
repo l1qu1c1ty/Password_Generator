@@ -21,7 +21,7 @@ def generate():
 def clear():
     text  = entry1.get()
     text2 = entry2.get()
-    if (text and text2) == "":
+    if (text or text2) == "":
         messagebox.showinfo("Warning!","Sections are already empty.")
     entry1.delete(0,END)
     entry2.delete(0,END)
