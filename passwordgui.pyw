@@ -23,6 +23,7 @@ def generate(): # Password Generate
     except:
         messagebox.showinfo("Warning!","Enter the numeric value.")
 
+<<<<<<< HEAD
 def clear():  # Entry Clear
    text2 = entry2.get()
    if text2 == "":
@@ -79,6 +80,15 @@ def print_selection():  # Checkbox Combination
     elif var5.get() == 1:
         all = numbers + lower + upper + symbols
 
+=======
+def clear():
+    text  = entry1.get()
+    text2 = entry2.get()
+    if (text or text2) == "":
+        messagebox.showinfo("Warning!","Sections are already empty.")
+    entry1.delete(0,END)
+    entry2.delete(0,END)
+>>>>>>> 402bb6d3ff0ff4628db46c13f58973c73bb4e20f
 
 def callback(url):
     webbrowser.open_new(url)
