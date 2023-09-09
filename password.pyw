@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import webbrowser
-import os, sys
 
 def generate_password():
     try:
@@ -126,8 +125,8 @@ root.title("Password Generator")
 root.configure(background="#6002fd")
 root.resizable(width=False, height=False)
 
-unchecked_image = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'unchecked.png'))
-checked_image = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'checked.png'))
+unchecked_image = PhotoImage(file="icons/unchecked.png")
+checked_image = PhotoImage(file="icons/checked.png")
 
 numbers = "1234567890"
 lower = "abcdefghijklmnopqrstuvwxyz"
@@ -140,15 +139,15 @@ entry1 = Entry(root,width=36)
 lbl2 = Label(root,text="Your Password:",fg="white",bg="#6002fd")
 entry2 = Entry(root,width=36)
 
-icon = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'password.png'))
+icon = PhotoImage(file="icons/password.png")
 
 btn1 = Button(root,text="generate password",fg="green",width=200,image=icon, compound='left', command=generate_password)
 
-icon2 = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'clear.png'))
+icon2 = PhotoImage(file="icons/clear.png")
 
 btn2 = Button(root,text="clear password\t",fg="red",width=200,image=icon2, compound='left', command=clear_password)
 
-icon3 = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'clear.png'))
+icon3 = PhotoImage(file="icons/text.png")
 
 btn3 = Button(root,text="save txt file\t",fg="blue",width=200,image=icon3, compound='left', command=save_text)
 
@@ -160,39 +159,39 @@ btn1.place(x=170,y=120)
 btn2.place(x=170,y=170)
 btn3.place(x=170,y=220)
 
-image = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'icon48.png'))
+image = PhotoImage(file="icons/icon48.png")
 image_label = Label(root, image=image, bg="#6002fd")
 image_label.place(x=1,y=1)
 
-image2 = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'icon2-48.png'))
+image2 = PhotoImage(file="icons/icon2-48.png")
 image2_label = Label(root, image=image2, bg="#6002fd")
 image2_label.place(x=1,y=50)
 
-image3 = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'github64.png'))
+image3 = PhotoImage(file="icons/github64.png")
 image3_label = Label(root, image=image3, bg="#6002fd")
 image3_label.place(x=230,y=260)
 
-image4 = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'numbers32.png'))
+image4 = PhotoImage(file="icons/numbers32.png")
 image4_label = Label(root, image=image4, bg="#6002fd")
 image4_label.place(x=10,y=120)
 
-image5 = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'alpha32.png'))
+image5 = PhotoImage(file="icons/alpha32.png")
 image5_label = Label(root, image=image5, bg="#6002fd")
 image5_label.place(x=10,y=150)
 
-image6 = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'alpha2-32.png'))
+image6 = PhotoImage(file="icons/alpha2-32.png")
 image6_label = Label(root, image=image6, bg="#6002fd")
 image6_label.place(x=10,y=180)
 
-image7 = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'asterisk32.png'))
+image7 = PhotoImage(file="icons/asterisk32.png")
 image7_label = Label(root, image=image7, bg="#6002fd")
 image7_label.place(x=10,y=210)
 
-image8 = PhotoImage(file=os.path.join(sys._MEIPASS, 'icons', 'tick32.png'))
+image8 = PhotoImage(file="icons/tick32.png")
 image8_label = Label(root, image=image8, bg="#6002fd")
 image8_label.place(x=10,y=240)
 
-root.iconbitmap(os.path.join(sys._MEIPASS, 'icons', 'icon100.ico'))
+root.iconbitmap("icons/icon100.ico")
 
 var1 = IntVar()
 var2 = IntVar()
