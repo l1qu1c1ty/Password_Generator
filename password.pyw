@@ -1,37 +1,57 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter import PhotoImage
+from password_strength import PasswordPolicy
 import random
 import webbrowser
+import pyperclip
 
 def generate_password():
     try:
-        text2 = entry2.get()
+        text2 = password_entry.get()
         length = entry1.get()
+
+        # Check if the length is negative
+        if int(length) < 1:
+            messagebox.showerror("Error", "Password length cannot be neutral or negative.")
+            return  # Exit the function if it's negative
+
+        if var1.get() == 0 and var2.get() == 0 and var3.get() == 0 and var4.get() == 0:
+            messagebox.showwarning("Warning!", "Select at least one character type.")
+            return  # Exit the function if no checkbox is checked
+        
         password = ''.join([random.SystemRandom().choice(all__char) for _ in range(int(length))])
         if not (text2 == ""):
-                entry2.delete(0,END)
+                password_entry.delete(0,END)
         
         if not (length == ""): 
-                entry2.insert(0,password)
-    except:
-        messagebox.showinfo("Warning!","Enter the numeric value.")
+                password_entry.insert(0,password)
+                messagebox.showinfo("Password","Password Created.")
+        
+        # Update the password strength label
+        update_password_strength_label(password)
+
+    except ValueError:
+        messagebox.showerror("Warning!", "Enter a numeric value.")
 
 def clear_password():  
-   text2 = entry2.get()
+   text2 = password_entry.get()
    if text2 == "":
-       messagebox.showinfo("Warning!","Sections are already empty.")
-   entry2.delete(0,END)
+       messagebox.showwarning("Warning!","Sections are already empty.")
+
+   if text2 != "":
+       password_entry.delete(0,END)
+       messagebox.showinfo("Information","Password section has been cleared.")
 
 def save_text():
-    passwd = entry2.get()
+    passwd = password_entry.get()
     if passwd != "":
-        with open("password.txt","a+") as password:
+        with open("password.txt","a+",encoding="utf-8") as password:
             text = f"Password: {passwd}\n"
             password.write(text)
             messagebox.showinfo("Information","Saved to password.txt file.")
-            password.close()
     else:
-        messagebox.showinfo("Warning!","Password section is empty.")
+        messagebox.showwarning("Warning!","Password section is empty.")
 
 def toggle_check(check_var, check_label):
     if check_var.get() == 0:
@@ -114,16 +134,135 @@ def selection():
         all__char = numbers + lower + upper + symbols
     
     else:
-        messagebox.showinfo("Warning!","All Checkbox Empty!")
+        messagebox.showinfo("Information","All Checkbox Empty!")
 
 def call__charback(url):
     webbrowser.open_new(url)
 
+def exit_application():
+    response = messagebox.askquestion("Exit Application", "Do you want to exit the application?")
+    if response == "yes":
+        root.destroy()
+
+def copy_to_clipboard(text):
+    pyperclip.copy(text)
+
+def copy_password():
+    generated_password = password_entry.get()
+    if generated_password:
+        copy_to_clipboard(generated_password)
+        messagebox.showinfo("Information", "Password copied to clipboard!")
+    
+    else:
+        messagebox.showwarning("Password","Password section is empty.")
+
+
+# Define the paths to your custom icons
+icons = {
+    "Very Weak": "icons/baby.png",
+    "Weak": "icons/child.png",
+    "Moderate": "icons/young.png",
+    "Strong": "icons/astronaut.png",
+    "Very Strong": "icons/ironman.png",
+    "Impossible": "icons/hacker.png",
+    "Unknown": "icons/alien.png",
+}
+
+policy = PasswordPolicy.from_names(
+    entropybits=30,
+    strength=0.66,
+    length=12,  # min length: 8
+    uppercase=2,  # need min. 2 uppercase letters
+    numbers=2,  # need min. 2 digits
+    special=2,  # need min. 2 special characters
+    nonletters=2,  # need min. 2 non-letter characters (digits, specials, anything)
+)
+
+# Define the password strength levels
+strength_levels = {
+    0: "Very Weak",
+    1: "Weak",
+    2: "Moderate",
+    3: "Strong",
+    4: "Very Strong",
+    5: "Impossible",
+    "Unknown": "Unknown"  # Make sure you have an "Unknown" icon in your 'icons' dictionary
+}
+
+# Define colors for each strength level
+strength_colors = {
+    "Very Weak": "red",
+    "Weak": "orange",
+    "Moderate": "yellow",
+    "Strong": "lightgreen",
+    "Very Strong": "lightgreen",
+    "Impossible": "lightgreen",
+    "Unknown": "black",
+}
+
+# Update the icon based on password strength
+def update_password_strength_label(password):
+    strength_hint = password_strength_hint(password)
+    password_strength_var.set(f"Password ==> {strength_hint}")
+    password_strength_label.config(fg=strength_colors.get(strength_hint, "black"))
+    show_icon_label(strength_hint)
+
+def password_strength_hint(password):
+    result = policy.test(password)
+    
+    # Calculate the strength level based on the number of failed policy checks
+    strength_level = max(5 - len(result), 0)
+    return strength_levels.get(strength_level, "Unknown")
+
+def show_icon_label(strength_hint):
+    # Modify this function to show the appropriate icon based on strength_hint
+    icon_label.config(image=icon_images.get(strength_hint, icon_images["Unknown"]))
+    icon_label.place(x=400, y=110)
+
+# Function to toggle password visibility
+def toggle_password_visibility():
+    global password_visible
+    password_visible = not password_visible
+    
+    if password_visible:
+        password_entry.config(show="")
+        show_password_checkbox.config(image=hide_icon)
+    else:
+        password_entry.config(show="*")
+        show_password_checkbox.config(image=show_icon)
+
+
 root = Tk()
-root.geometry("550x350")
+root.geometry("550x550")
 root.title("Password Generator")
 root.configure(background="#6002fd")
 root.resizable(width=False, height=False)
+
+# Create a StringVar to store the password strength hint
+password_strength_var = StringVar()
+password_strength_var.set("")
+
+# Create PhotoImage objects for "Show" and "Hide" icons
+show_icon = PhotoImage(file="icons/show.png")
+hide_icon = PhotoImage(file="icons/hide.png")
+
+# Initialize a variable to track password visibility
+password_visible = False
+
+# Create a Label for showing/hiding the password
+show_password_checkbox = Label(root, image=show_icon, bg="#6002fd", cursor="hand2")
+show_password_checkbox.bind("<Button-1>", lambda e: toggle_password_visibility())
+show_password_checkbox.place(x=485, y=65)
+
+# Load the icons into PhotoImage objects
+icon_images = {strength: PhotoImage(file=path) for strength, path in icons.items()}
+
+# In your GUI code, you can set the initial image and update it based on password strength
+icon_label = Label(root, image=icon_images["Very Weak"], fg="#f5e001", bg="#6002fd")
+
+
+password_strength_label = Label(root, textvariable=password_strength_var, fg="#1ae001", bg="#6002fd")
+password_strength_label.place(x=220, y=120)
 
 unchecked_image = PhotoImage(file="icons/unchecked.png")
 checked_image = PhotoImage(file="icons/checked.png")
@@ -134,30 +273,49 @@ upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 symbols = "!'^+%&/()?=.,~@${*}[;]\_-₺€"
 all__char_char = numbers + lower + upper + symbols
 
+
 lbl1 = Label(root,text="Password Length:",fg="white",bg="#6002fd")
-entry1 = Entry(root,width=36)
 lbl2 = Label(root,text="Your Password:",fg="white",bg="#6002fd")
-entry2 = Entry(root,width=36)
+lbl3 = Label(root,text="Password Strength:",fg="white",bg="#6002fd")
+
+entry1 = Entry(root,width=36, fg="blue", bg="white")
+password_entry = Entry(root,width=36, fg="blue", bg="white", show="*")
 
 icon = PhotoImage(file="icons/password.png")
 
-btn1 = Button(root,text="generate password",fg="green",width=200,image=icon, compound='left', command=generate_password)
+btn1 = Button(root,text="Generate Password\t",fg="green", width=200, image=icon, compound='left', command=generate_password)
 
 icon2 = PhotoImage(file="icons/clear.png")
 
-btn2 = Button(root,text="clear password\t",fg="red",width=200,image=icon2, compound='left', command=clear_password)
+btn2 = Button(root,text="Clear Password\t",fg="purple", width=200, image=icon2, compound='left', command=clear_password)
 
 icon3 = PhotoImage(file="icons/text.png")
 
-btn3 = Button(root,text="save txt file\t",fg="blue",width=200,image=icon3, compound='left', command=save_text)
+btn3 = Button(root,text="Save 'txt' File\t",fg="blue", width=200, image=icon3, compound='left', command=save_text)
+
+icon4 = PhotoImage(file="icons/exit.png")
+
+exit_button = Button(root, text="Exit Application\t", fg="red", width=200, image=icon4, compound='left', command=exit_application)
+
+icon5 = PhotoImage(file="icons/clipboard.png")
+
+copy_button = Button(root, text="Copy to Clipboard\t", fg="blue", width=200, image=icon5, compound='left', command=copy_password)
 
 lbl1.place(x=60,y=20)
+
 entry1.place(x=190,y=20)
+
 lbl2.place(x=60,y=70)
-entry2.place(x=190,y=70)
-btn1.place(x=170,y=120)
-btn2.place(x=170,y=170)
-btn3.place(x=170,y=220)
+
+password_entry.place(x=190,y=70)
+
+lbl3.place(x=60,y=120)
+
+btn1.place(x=220,y=180)
+btn2.place(x=220,y=230)
+btn3.place(x=220,y=280)
+copy_button.place(x=220, y=330)
+exit_button.place(x=220, y=380)
 
 image = PhotoImage(file="icons/icon48.png")
 image_label = Label(root, image=image, bg="#6002fd")
@@ -167,29 +325,35 @@ image2 = PhotoImage(file="icons/icon2-48.png")
 image2_label = Label(root, image=image2, bg="#6002fd")
 image2_label.place(x=1,y=50)
 
+
 image3 = PhotoImage(file="icons/github64.png")
-image3_label = Label(root, image=image3, bg="#6002fd")
-image3_label.place(x=230,y=260)
+image3_label = Label(root, image=image3, bg="#6002fd",cursor="hand2")
+image3_label.bind("<Button-1>",lambda e: call__charback("https://github.com/l1qu1c1ty"))
+image3_label.place(x=230,y=450)
 
 image4 = PhotoImage(file="icons/numbers32.png")
 image4_label = Label(root, image=image4, bg="#6002fd")
-image4_label.place(x=10,y=120)
+image4_label.place(x=10,y=230)
 
 image5 = PhotoImage(file="icons/alpha32.png")
 image5_label = Label(root, image=image5, bg="#6002fd")
-image5_label.place(x=10,y=150)
+image5_label.place(x=10,y=260)
 
 image6 = PhotoImage(file="icons/alpha2-32.png")
 image6_label = Label(root, image=image6, bg="#6002fd")
-image6_label.place(x=10,y=180)
+image6_label.place(x=10,y=290)
 
 image7 = PhotoImage(file="icons/asterisk32.png")
 image7_label = Label(root, image=image7, bg="#6002fd")
-image7_label.place(x=10,y=210)
+image7_label.place(x=10,y=320)
 
 image8 = PhotoImage(file="icons/tick32.png")
 image8_label = Label(root, image=image8, bg="#6002fd")
-image8_label.place(x=10,y=240)
+image8_label.place(x=10,y=350)
+
+image9 = PhotoImage(file="icons/strength.png")
+image9_label = Label(root, image=image9, bg="#6002fd")
+image9_label.place(x=1 ,y=110)
 
 root.iconbitmap("icons/icon100.ico")
 
@@ -199,38 +363,38 @@ var3 = IntVar()
 var4 = IntVar()
 var5 = IntVar()
 
-check1_label = Label(root, text="Number", fg="white", bg="#6002fd")
+check1_label = Label(root, text="Digits", fg="white", bg="#6002fd")
 check1_checkbox = Label(root, image=unchecked_image, bg="#6002fd", cursor="hand2")
 check1_checkbox.bind("<Button-1>", lambda e: toggle_check(var1, check1_checkbox))
-check1_label.place(x=50, y=120)
-check1_checkbox.place(x=110, y=115)
+check1_label.place(x=50, y=235)
+check1_checkbox.place(x=110, y=230)
 
 check2_label = Label(root, text="Lower", fg="white", bg="#6002fd")
 check2_checkbox = Label(root, image=unchecked_image, bg="#6002fd", cursor="hand2")
 check2_checkbox.bind("<Button-1>", lambda e: toggle_check(var2, check2_checkbox))
-check2_label.place(x=50, y=150)
-check2_checkbox.place(x=110, y=145)
+check2_label.place(x=50, y=265)
+check2_checkbox.place(x=110, y=260)
 
 check3_label = Label(root, text="Upper", fg="white", bg="#6002fd")
 check3_checkbox = Label(root, image=unchecked_image, bg="#6002fd", cursor="hand2")
 check3_checkbox.bind("<Button-1>", lambda e: toggle_check(var3, check3_checkbox))
-check3_label.place(x=50, y=180)
-check3_checkbox.place(x=110, y=175)
+check3_label.place(x=50, y=295)
+check3_checkbox.place(x=110, y=290)
 
 check4_label = Label(root, text="Symbols", fg="white", bg="#6002fd")
 check4_checkbox = Label(root, image=unchecked_image, bg="#6002fd", cursor="hand2")
 check4_checkbox.bind("<Button-1>", lambda e: toggle_check(var4, check4_checkbox))
-check4_label.place(x=50, y=210)
-check4_checkbox.place(x=110, y=205)
+check4_label.place(x=50, y=325)
+check4_checkbox.place(x=110, y=320)
 
 check5_label = Label(root, text="All", fg="white", bg="#6002fd")
 check5_checkbox = Label(root, image=unchecked_image, bg="#6002fd", cursor="hand2")
 check5_checkbox.bind("<Button-1>", lambda e: toggle_check(var5, check5_checkbox))
-check5_label.place(x=50, y=240)
-check5_checkbox.place(x=110, y=235)
+check5_label.place(x=50, y=355)
+check5_checkbox.place(x=110, y=350)
 
 link1 = Label(root,text="Follow Me Github",fg="white",bg="#6002fd",cursor="hand2")
 link1.bind("<Button-1>",lambda e: call__charback("https://github.com/l1qu1c1ty"))
-link1.place(x=200,y=320)
+link1.place(x=200,y=520)
 
 mainloop()
