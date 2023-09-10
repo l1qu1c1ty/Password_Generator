@@ -270,7 +270,7 @@ checked_image = PhotoImage(file="icons/checked.png")
 numbers = "1234567890"
 lower = "abcdefghijklmnopqrstuvwxyz"
 upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-symbols = "!'^+%&/()?=.,~@${*}[;]\_-₺€"
+symbols = "!'^+%&/()?=.,~@${*}[;]\\_-₺€"
 all__char_char = numbers + lower + upper + symbols
 
 

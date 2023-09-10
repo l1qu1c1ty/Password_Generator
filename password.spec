@@ -2,7 +2,7 @@
 
 block_cipher = None
 a = Analysis(
-    ['password.pyw'],
+    ['password_meipass.pyw'],
     pathex=[],
     binaries=[],
     datas=[('icons','icons')],
